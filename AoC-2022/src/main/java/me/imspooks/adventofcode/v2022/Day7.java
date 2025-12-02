@@ -55,8 +55,8 @@ public class Day7 implements Day {
         List<Directory> directories = new ArrayList<>();
 
         for (Directory directory : toCheck) {
-            System.out.println("--------------");
             long newAvailable = available + directory.totalSize();
+//            System.out.println("--------------");
 //            System.out.println("Deleting \"" + directory.name + " (size=" + directory.size() + ",fullSize=" + directory.totalSize() + ")"
 //                    + "\" will result to " + newAvailable + " free space");
 
@@ -76,7 +76,6 @@ public class Day7 implements Day {
     private Directory walk(boolean isRoot, String name, List<String> input) {
         final List<Directory> subDirectories = new ArrayList<>();
         final List<File> files = new ArrayList<>();
-        List<FileSystem> indexed = new ArrayList<>();
 
         final Directory root = new Directory(name, subDirectories, files);
 
@@ -91,28 +90,32 @@ public class Day7 implements Day {
                 if (command.startsWith("cd ")) {
                     if (command.equals("cd ..")) {
                         if (open == 0) {
+                            // We are in our starting point, break the loop
                             break;
                         }
                         open--;
                     } else {
+                        // We cd'd into another folder, add it as a sub folder
                         if (open == 0) {
                             String dirName = command.substring(3);
-                            Directory directory = this.walk(false, dirName, input.subList(i + 1, input.size()));
+                            // Copy our input from what we have and add 1 to the starting index, to prevent a stack overflow
+                            List<String> next = input.subList(i + 1, input.size());
+                            Directory directory = this.walk(false, dirName, next);
 
-                            subDirectories.add(directory);;
-                            indexed.add(directory);
+                            subDirectories.add(directory);
+                            ;
                         }
                         open++;
                     }
                 }
             } else {
                 if (open == 0) {
+                    // File found in our directory
                     if (!command.startsWith("dir ")) {
                         String[] split = command.split(" ");
 
                         File file = new File(split[1], Long.parseLong(split[0]));
                         files.add(file);
-                        indexed.add(file);
                     }
                 }
             }
@@ -123,13 +126,7 @@ public class Day7 implements Day {
 
     private static final String TAB = "  ";
 
-    private interface FileSystem {
-        String name();
-        void print(int tabs);
-    }
-
-    private record Directory(String name, List<Directory> directories, List<File> files) implements FileSystem {
-        @Override
+    private record Directory(String name, List<Directory> directories, List<File> files) {
         public void print(int tabs) {
             String prefix = TAB.repeat(tabs);
             System.out.println(prefix + "- " + this.name + " (dir)");
@@ -169,8 +166,7 @@ public class Day7 implements Day {
         }
     }
 
-    private record File(String name, long size) implements FileSystem {
-        @Override
+    private record File(String name, long size) {
         public void print(int tabs) {
             String prefix = TAB.repeat(tabs);
             System.out.println(prefix + "- " + this.name + " (file, size=" + this.size + ")");
