@@ -17,12 +17,12 @@ public class DayTemplate implements Day {
     }
 
     @Part(part = 1)
-    public int firstPart() {
+    public long firstPart() {
         return 0;
     }
 
     @Part(part = 2)
-    public int secondPart() {
+    public long secondPart() {
         return 0;
     }
 }
