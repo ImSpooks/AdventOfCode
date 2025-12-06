@@ -95,20 +95,7 @@ public class Day6 implements Day {
                 sumData.add(NumberConversions.toLong(number));
             }
 
-            String operation = colData.get(colData.size() - 1);
-            do {
-                operation = operation.replace(" ", "");
-            } while (operation.contains(" "));
-
-            long total = sumData.get(0);
-            for (int i = 1; i < sumData.size(); i++) {
-                switch (operation) {
-                    case "+" -> total += sumData.get(i);
-                    case "*" -> total *= sumData.get(i);
-                }
-            }
-
-            result += total;
+            result = getResult(result, colData, sumData);
         }
 
         return result;
@@ -149,23 +136,28 @@ public class Day6 implements Day {
                     sumData.add(NumberConversions.toLong(value));
             }
 
-            String operation = colData.get(colData.size() - 1);
-            do {
-                operation = operation.replace(" ", "");
-            } while (operation.contains(" "));
-
-            long total = sumData.get(0);
-            for (int i = 1; i < sumData.size(); i++) {
-                switch (operation) {
-                    case "+" -> total += sumData.get(i);
-                    case "*" -> total *= sumData.get(i);
-                }
-            }
-
-            result += total;
+            result = getResult(result, colData, sumData);
             // System.out.println("col " + col + " (" + sumData + ") \"" + operation + "\" = " + total);
         }
 
+        return result;
+    }
+
+    private long getResult(long result, List<String> colData, List<Long> sumData) {
+        String operation = colData.get(colData.size() - 1);
+        do {
+            operation = operation.replace(" ", "");
+        } while (operation.contains(" "));
+
+        long total = sumData.get(0);
+        for (int i = 1; i < sumData.size(); i++) {
+            switch (operation) {
+                case "+" -> total += sumData.get(i);
+                case "*" -> total *= sumData.get(i);
+            }
+        }
+
+        result += total;
         return result;
     }
 
